@@ -1,12 +1,10 @@
 <?php
 include("init.php");
-
 if (!isset($_SESSION["userid"])) {
     $template->assign("loginerror", 0);
     $template->display("login.tpl");
     die();
 }
-
 $liste = (object) new tasklist();
 $objmilestone = (object) new milestone();
 
@@ -19,6 +17,7 @@ $id = getArrayVal($_GET, "id");
 $tlid = getArrayVal($_GET, "tlid");
 $mode = getArrayVal($_GET, "mode");
 
+
 $project = array();
 $project['ID'] = $id;
 $classes = array("overview" => "overview",
@@ -29,9 +28,7 @@ $classes = array("overview" => "overview",
     "users" => "users",
     "tracker" => "tracking"
     );
-
 $template->assign("classes", $classes);
-
 if (!chkproject($userid, $id)) {
     $errtxt = $langfile["notyourproject"];
     $noperm = $langfile["accessdenied"];
@@ -58,7 +55,6 @@ if ($action == "addform") {
         $template->assign("addliste", 0);
     }
 }
-
 if ($action == "editform") {
     if (!$userpermissions["tasks"]["edit"]) {
         $errtxt = $langfile["nopermission"];
@@ -67,7 +63,6 @@ if ($action == "editform") {
         $template->display("error.tpl");
         die();
     }
-
     $tasklist = $liste->getTasklist($tlid);
 
     $milestone = $objmilestone->getMilestone($tasklist["milestone"]);
@@ -87,8 +82,7 @@ if ($action == "editform") {
     $template->assign("milestones", $milestones);
     $template->assign("tasklist", $tasklist);
     $template->assign("project", $project);
-
-    $template->display("forms/edittasklist.tpl");
+    $template->display("edittasklist.tpl");
 } elseif ($action == "edit") {
     if (!$userpermissions["tasks"]["edit"]) {
         $errtxt = $langfile["nopermission"];

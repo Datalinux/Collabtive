@@ -21,11 +21,7 @@ class Smarty_CacheResource_Memcache extends Smarty_CacheResource_KeyValueStore
 
     public function __construct()
     {
-        if (class_exists('Memcached')) {
-            $this->memcache = new Memcached();
-        } else {
-            $this->memcache = new Memcache();
-        }
+        $this->memcache = new Memcache();
         $this->memcache->addServer('127.0.0.1', 11211);
     }
 
@@ -43,12 +39,12 @@ class Smarty_CacheResource_Memcache extends Smarty_CacheResource_KeyValueStore
         foreach ($keys as $k) {
             $_k = sha1($k);
             $_keys[] = $_k;
-            $lookup[ $_k ] = $k;
+            $lookup[$_k] = $k;
         }
         $_res = array();
         $res = $this->memcache->get($_keys);
         foreach ($res as $k => $v) {
-            $_res[ $lookup[ $k ] ] = $v;
+            $_res[$lookup[$k]] = $v;
         }
 
         return $_res;

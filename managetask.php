@@ -4,6 +4,8 @@ require("./init.php");
 $action = getArrayVal($_GET, "action");
 
 if (!isset($_SESSION["userid"])) {
+
+
     $template->assign("loginerror", 0);
     $template->display("login.tpl");
     die();
@@ -55,27 +57,24 @@ if ($action == "add") {
     } else {
         // add the task
         $taskId = $task->add($cleanPost["start"], $cleanPost["end"], $cleanPost["title"], $cleanPost["text"], $tasklist, $id);
-
         if ($taskId) {
             // Loop through the selected users from the form and assign them to the task
             foreach ($cleanPost["assigned"] as $member) {
                 $task->assign($taskId, $member);
             }
-
             // if tasks was added and mailnotify is activated, send an email
             if ($settings["mailnotify"]) {
                 $projobj = new project();
                 $theproject = $projobj->getProject($cleanPost["project"]["ID"]);
-
                 // Check project status
                 if ($theproject["status"] != 2) {
                     foreach ($cleanPost["assigned"] as $member) {
                         $usr = (object)new user();
                         $user = $usr->getProfile($member);
-
                         if (!empty($user["email"]) && $userid != $user["ID"]) {
                             // send email
                             $userlang = readLangfile($user['locale']);
+
                             $subject = $userlang["taskassignedsubject"] . ' (' . $userlang['by'] . ' ' . $username . ')';
 
                             $mailcontent = $userlang["hello"] . ",<br /><br/>" .
@@ -91,11 +90,13 @@ if ($action == "add") {
                 }
             }
 
-            if (isset($cleanGet["redir"]) && $cleanGet["redir"] == "yes") {
+
+            if(isset($cleanGet["redir"]) && $cleanGet["redir"] == "yes")
+            {
                 $loc = $url . "managetask.php?action=showproject&id=$id&mode=added";
                 header("Location: $loc");
             }
-            else {
+            else{
                 echo "ok";
             }
         } else {
@@ -152,8 +153,7 @@ if ($action == "add") {
     $template->assign("showhtml", "no");
     $template->assign("showheader", "no");
     $template->assign("async", "yes");
-
-    $template->display("forms/edittask.tpl");
+    $template->display("edittask.tpl");
 } elseif ($action == "edit") {
     // check if user has appropriate permissions
     if (!$userpermissions["tasks"]["edit"]) {
@@ -208,7 +208,6 @@ if ($action == "add") {
                     }
                 }
             }
-
             if ($redir) {
                 $redir = $url . $redir;
                 header("Location: $redir");
@@ -230,7 +229,6 @@ if ($action == "add") {
         $template->display("error.tpl");
         die();
     }
-
     if ($task->del($cleanGet["tid"])) {
         // $redir = urldecode($redir);
         if (isset($redir) && $redir) {
@@ -273,12 +271,10 @@ if ($action == "add") {
         $template->display("error.tpl");
         die();
     }
-
     //close the task
     //if a redir URL was given, send a header. else its an asyncronous request so return ok
     if ($task->close($cleanGet["tid"])) {
         $redir = urldecode($redir);
-
         if ($redir) {
             $redir = $url . $redir;
             header("Location: $redir");
@@ -330,7 +326,6 @@ if ($action == "add") {
         $template->display("error.tpl");
         die();
     }
-
     if (!chkproject($userid, $id)) {
         $errtxt = $langfile["notyourproject"];
         $noperm = $langfile["accessdenied"];
@@ -338,7 +333,6 @@ if ($action == "add") {
         $template->display("error.tpl");
         die();
     }
-
     $tasklistObj = new tasklist();
     $projectObj = new project();
     $milestoneObj = new milestone();
@@ -362,7 +356,8 @@ if ($action == "add") {
     $template->assign("projectname", $projectname);
     $template->assign("assignable_users", $project_members);
 
-    $template->display("projecttasks.tpl");
+
+   $template->display("projecttasks.tpl");
 }
 elseif ($action == "showtask") {
     if (!$userpermissions["tasks"]["view"]) {
@@ -372,7 +367,6 @@ elseif ($action == "showtask") {
         $template->display("error.tpl");
         die();
     }
-
     if (!chkproject($userid, $id)) {
         $errtxt = $langfile["notyourproject"];
         $noperm = $langfile["accessdenied"];
@@ -380,16 +374,14 @@ elseif ($action == "showtask") {
         $template->display("error.tpl");
         die();
     }
-
     $projectObj = new project();
     $project = $projectObj->getProject($id);
     $projectname = $project["name"];
 
-    $taskObj = new task();
 
+    $taskObj = new task();
     //get the task details
     $task = $taskObj->getTask($cleanGet["tid"]);
-
     //get the users assigned to the task
     $members = $projectObj->getProjectMembers($id, $projectObj->countMembers($id));
 
@@ -436,7 +428,6 @@ elseif($action == "projectTasks")
         $template->display("error.tpl");
         die();
     }
-
     if (!chkproject($userid, $id)) {
         $errtxt = $langfile["notyourproject"];
         $noperm = $langfile["accessdenied"];
@@ -444,9 +435,7 @@ elseif($action == "projectTasks")
         $template->display("error.tpl");
         die();
     }
-
     $tasklistObj = new tasklist();
-
     // Get open and closed tasks from list
     $openTasks = $tasklistObj->getTasksFromList($cleanGet["tlid"]);
     $closedTasks = $tasklistObj->getTasksFromList($cleanGet["tlid"],0);

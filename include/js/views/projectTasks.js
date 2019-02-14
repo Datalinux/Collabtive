@@ -76,7 +76,6 @@ var handleForm = function (event, view) {
                 blindtoggle("form_" + tasklistID);
                 toggleClass("add_butn_" + tasklistID, "butn_link_active", "butn_link");
                 toggleClass("sm_" + tasklistID, "smooth", "nosmooth");
-                theForm.reset();
             }
             else
             {
@@ -211,7 +210,6 @@ window.addEventListener("load", function () {
         theBlocks[i].setAttribute("onclick", theAction);
     }
     activateAccordeon(0);
-    initTinyMce();
 
 });
 window.addEventListener("load", initTasklistViews());

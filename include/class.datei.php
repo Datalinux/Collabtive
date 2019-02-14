@@ -42,7 +42,6 @@ class datei
         // Insert folder into database
         $insStmt = $conn->prepare("INSERT INTO projectfolders (parent, project, name, description, visible) VALUES (?, ?, ?, ?, ?)");
         $ins = $insStmt->execute(array($parent, $project, $folder, $desc, ""));
-        $folderId = $conn->lastInsertId();
 
         if ($ins) {
             // Construct the path to the new folder
@@ -52,7 +51,7 @@ class datei
                 if (mkdir($makefolder, 0777, true)) {
                     // Folder created
                     $mylog->add($folderOrig, 'folder', 1, $project);
-                    return $folderId;
+                    return true;
                 }
             } else {
                 // Folder already existed, return false

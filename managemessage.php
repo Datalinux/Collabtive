@@ -141,12 +141,10 @@ if ($action == "addform") {
     //disable full html, for async display
     $template->assign("showhtml","no");
     $template->assign("async","yes");
-
     // get the message to edit
     $message = $messageObj->getMessage($cleanGet["mid"]);
-
     $template->assign("message", $message);
-    $template->display("forms/editmessageform.tpl");
+    $template->display("editmessageform.tpl");
 } elseif ($action == "edit") {
     // check if the user is allowed to edit messages
     if (!$userpermissions["messages"]["edit"]) {
@@ -176,7 +174,6 @@ if ($action == "addform") {
         $template->display("error.tpl");
         die();
     }
-
     // delete the message
     if ($messageObj->del($cleanGet["mid"])) {
         // if a redir target is given, redirect to it. else redirect to standard target.
@@ -197,7 +194,6 @@ if ($action == "addform") {
         $template->display("error.tpl");
         die();
     }
-
     // get page title from language file
     $cleanPost["title"] = $langfile["reply"];
     $template->assign("title", $cleanPost["title"]);
@@ -226,8 +222,8 @@ if ($action == "addform") {
         die();
     }
 
-    $messageID = $messageObj->add($id, $cleanPost["title"], $message, $userid, $username, $cleanPost["mid"], $cleanPost["milestone"]);
 
+    $messageID = $messageObj->add($id, $cleanPost["title"], $message, $userid, $username, $cleanPost["mid"], $cleanPost["milestone"]);
     if ($messageID) {
         if ($cleanPost["thefiles"] > 0) {
             // attach existing file
@@ -241,14 +237,12 @@ if ($action == "addform") {
             $sendto = getArrayVal($_POST, "sendto");
             $usr = (object) new project();
             $users = $usr->getProjectMembers($id, 10000);
-
             if ($sendto[0] == "all") {
                 $sendto = $users;
                 $sendto = reduceArray($sendto);
             } elseif ($sendto[0] == "none") {
                 $sendto = array();
             }
-
             foreach($users as $user) {
                 if (!empty($user["email"])) {
                     $userlang = readLangfile($user['locale']);
@@ -285,7 +279,6 @@ if ($action == "addform") {
         $template->display("error.tpl");
         die();
     }
-
     if (!chkproject($userid, $id)) {
         $errtxt = $langfile["notyourproject"];
         $noperm = $langfile["accessdenied"];
@@ -300,10 +293,10 @@ if ($action == "addform") {
     $members = $myproject->getProjectMembers($id, 10000);
     $projectname = $pro['name'];
     $template->assign("projectname", $projectname);
-
     // get the page title
     $cleanPost["title"] = $langfile['messages'];
     $template->assign("title", $cleanPost["title"]);
+
 
     // get files of the project
     $datei = new datei();
@@ -326,7 +319,6 @@ elseif($action == "projectMessages")
         $template->display("error.tpl");
         die();
     }
-
     if (!chkproject($userid, $id)) {
         $errtxt = $langfile["notyourproject"];
         $noperm = $langfile["accessdenied"];
@@ -334,14 +326,13 @@ elseif($action == "projectMessages")
         $template->display("error.tpl");
         die();
     }
-
     // get all messages of this project
+
     $offset = 0;
     if(isset($cleanGet["offset"]))
     {
         $offset = $cleanGet["offset"];
     }
-
     $limit = 20;
     if(isset($cleanGet["limit"]))
     {
@@ -359,7 +350,8 @@ elseif($action == "projectMessages")
 
     echo json_encode($jsonMessages);
 }
-elseif($action == "userMessages") {
+elseif($action == "userMessages")
+{
     if (!$userpermissions["messages"]["view"]) {
         $errtxt = $langfile["nopermission"];
         $noperm = $langfile["accessdenied"];
@@ -367,7 +359,6 @@ elseif($action == "userMessages") {
         $template->display("error.tpl");
         die();
     }
-
     if (!chkproject($userid, $id)) {
         $errtxt = $langfile["notyourproject"];
         $noperm = $langfile["accessdenied"];
@@ -375,21 +366,21 @@ elseif($action == "userMessages") {
         $template->display("error.tpl");
         die();
     }
-
     // get all messages of this project
+
     $offset = 0;
     if(isset($cleanGet["offset"]))
     {
         $offset = $cleanGet["offset"];
     }
-
     $limit = 20;
     if(isset($cleanGet["limit"]))
     {
         $limit = $cleanGet["limit"];
     }
 
-    $userMessages = $messageObj->getUserMessages($userid, $limit, $offset);
+   $userMessages = $messageObj->getUserMessages($userid, $limit, $offset);
+
 
     $jsonMessages["items"] = $userMessages;
     $jsonMessages["count"] = $number = $messageObj->countUserMessages($userid);
@@ -404,7 +395,6 @@ elseif ($action == "showmessage") {
         $template->display("error.tpl");
         die();
     }
-
     if (!chkproject($userid, $id)) {
         $errtxt = $langfile["notyourproject"];
         $noperm = $langfile["accessdenied"];
@@ -415,11 +405,10 @@ elseif ($action == "showmessage") {
 
     // get the message and its replies
     $message = $messageObj->getMessage($cleanGet["mid"]);
-
-    //if this message is a reply to another message, get its parent message
-    if($message["replyto"] > 0) {
-        $message["parentMessage"] = $messageObj->getMessage($message["replyto"], false);
-    }
+     //if this message is a reply to another message, get its parent message
+     if($message["replyto"] > 0) {
+         $message["parentMessage"] = $messageObj->getMessage($message["replyto"], false);
+     }
 
     $myproject = new project();
     $pro = $myproject->getProject($id);
@@ -449,7 +438,6 @@ elseif ($action == "message") {
         $template->display("error.tpl");
         die();
     }
-
     if (!chkproject($userid, $id)) {
         $errtxt = $langfile["notyourproject"];
         $noperm = $langfile["accessdenied"];
@@ -487,7 +475,6 @@ elseif ($action == "export-project") {
 
     $pdf->getAliasNbPages();
     $pdf->AddPage();
-
     // check if the user is allowed to edit messages
     if (!$userpermissions["messages"]["add"]) {
         $errtxt = $langfile["nopermission"];
@@ -496,16 +483,13 @@ elseif ($action == "export-project") {
         $template->display("error.tpl");
         die();
     }
-
     // get all messages of this project
     $messages = $messageObj->getProjectMessages($id);
-
     // get project's name
     $myproject = new project();
     $pro = $myproject->getProject($id);
     $projectname = $pro['name'];
     $template->assign("projectname", $projectname);
-
     // get the page title
     $cleanPost["title"] = $langfile['messages'];
 
@@ -556,7 +540,6 @@ elseif ($action == "export-project") {
 
     $pdf->AliasNbPages();
     $pdf->AddPage();
-
     // check if the user is allowed to edit messages
     if (!$userpermissions["messages"]["add"]) {
         $errtxt = $langfile["nopermission"];
@@ -565,16 +548,13 @@ elseif ($action == "export-project") {
         $template->display("error.tpl");
         die();
     }
-
     // get all messages of this project
     $message = $messageObj->getMessage($cleanGet["mid"]);
-
     // get project's name
     $myproject = new project();
     $pro = $myproject->getProject($id);
     $projectname = $pro['name'];
     $template->assign("projectname", $projectname);
-
     // get the page title
     $cleanPost["title"] = $langfile['messages'];
 
@@ -591,12 +571,10 @@ elseif ($action == "mymsgs")
     // create new project and file objects
     $project = new project();
     $myfile = new datei();
-
     // get all uof the users projects
     $myprojects = $project->getMyProjects($userid, 1, 0, 10000);
     $cou = 0;
     $messages = array();
-
     // loop through the projects and get messages and files for each project
     if (!empty($myprojects))
     {
@@ -605,12 +583,10 @@ elseif ($action == "mymsgs")
             $message = $messageObj->getProjectMessages($proj["ID"]);
             $ordner = $myfile->getProjectFiles($proj["ID"], 1000);
             $milestones = $objmilestone->getProjectMilestones($proj["ID"], 10000);
-
             if(!empty($message))
             {
                 array_push($messages,$message);
             }
-
             $myprojects[$cou]["milestones"] = $milestones;
             $myprojects[$cou]["messages"] = $message;
             $myprojects[$cou]["files"] = $ordner;

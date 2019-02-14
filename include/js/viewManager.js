@@ -21,8 +21,6 @@ function createView(myView) {
         additionalData: [],
         limit: pagination.itemsPerPage,
         offset: 0,
-        sortBy: myView.sortBy || "",
-        sortDirection: myView.sortDirection || "ASC",
         currentPage: 1,
         itemsCount: 0,
         itemType: myView.itemType,
@@ -56,15 +54,7 @@ function createView(myView) {
         }
     });
 
-    var myUrl = myView.url;
-    if(myView.sortBy){
-        myUrl += "&sortBy=" + myView.sortBy;
-    }
-    if(myView.sortDirection){
-        myUrl += "&sortDirection=" + myView.sortDirection;
-    }
-
-    var ajax = new ajaxRequest(myUrl, myView.el, function () {
+    var ajax = new ajaxRequest(myModel.url, myView.el, function () {
         //update the model with the retrieved data
         const responseData = JSON.parse(ajax.request.responseText);
 
@@ -90,7 +80,6 @@ function createView(myView) {
     return vueview;
 }
 
-
 /*
  * Function to recursively update a view and its dependencies
  * @param Object view A vue.js view to be updated
@@ -109,12 +98,6 @@ function updateView(view, updateDependencies) {
     }
     if (view.offset > 0) {
         myUrl += "&offset=" + view.offset;
-    }
-    if(view.sortBy){
-        myUrl += "&sortBy=" + view.sortBy;
-    }
-    if(view.sortDirection){
-        myUrl += "&sortDirection=" + view.sortDirection;
     }
 
     var ajax = new ajaxRequest(myUrl, view.$el.id, function () {
@@ -145,12 +128,6 @@ function updateView(view, updateDependencies) {
         }
     });
     ajax.sendRequest();
-}
-
-function sortView(view, sortBy, sortDirection = "DESC") {
-   view.sortBy = sortBy;
-   view.sortDirection = view.sortDirection == "ASC" ? "DESC" : "ASC";
-   view.update(true);
 }
 /*
  * Pagination for view JS views
@@ -292,6 +269,7 @@ function submitForm(event) {
                 //show system message for element added
                 systemMessage.added(formView.$get("itemType"));
                 //try calling the formSubmited() handler that can be defined
+                theForm.reset();
                 try {
                     formSubmited();
                 }

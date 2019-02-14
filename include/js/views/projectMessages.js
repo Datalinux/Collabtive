@@ -82,7 +82,7 @@ function renderMilestoneTree(view) {
         }
     }
 }
-function createFilesTree(view) {
+function renderFilesTree(view) {
     var treeName = "filesTree";
     var basicImgPath = "templates/standard/theme/standard/images/symbols/";
 
@@ -117,7 +117,6 @@ function createFilesTree(view) {
         }
     }
 }
-
 function formSubmited() {
     blindtoggle('addmsg');
     toggleClass('sm_msgs', 'smooth', 'nosmooth');

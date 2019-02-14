@@ -1,11 +1,11 @@
 [
-  ["ganttChart", true],
-  ["globalTaskOverview", true],
-  ["projectTemplates", true],
-  ["conference", true],
-  ["taskComments", true],
-  ["autoTimetracker", true],
-  ["mobileWebApp", true],
+  ["ganttChart", false],
+  ["globalTaskOverview", false],
+  ["projectTemplates", false],
+  ["conference", false],
+  ["taskComments", false],
+  ["autoTimetracker", false],
+  ["mobileWebApp", false],
   ["test", false]
 
 ]
